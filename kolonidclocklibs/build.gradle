@@ -37,6 +37,12 @@ android {
         aidl = true
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+
 //    afterEvaluate {
 //        publishing{
 //            publications{
