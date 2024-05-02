@@ -1,24 +1,27 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-//    id 'maven-publish'
+    id 'maven-publish'
 }
+
+group = 'com.github.jitpack'
+version = '1.0'
 
 android {
     namespace 'com.kolonidclocklibrary'
     compileSdk 34
 
     defaultConfig {
-//        applicationId "com.kolonidclocklibrary"
         minSdk 24
         targetSdk 34
-
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -69,6 +72,7 @@ android {
 
 dependencies {
 
+    implementation libs.kotlin.stdlib
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
@@ -89,4 +93,18 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven { url "https://jitpack.io" }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.jitpack'
+                artifactId = 'com.kolonidclocklibrary'
+                version = '1.0'
+            }
+        }
+    }
 }
