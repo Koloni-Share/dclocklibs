@@ -9,7 +9,7 @@ import com.kolonidclocklibs.datafile.ServiceProviderInstance
  *  Koloni DC Locker customized library.
  *  Developed by Nirav Mehta : 02-05-2024.
  */
-class KoloniDCSingleTone {
+public class KoloniDCSingleTone {
 
     companion object {
         private var instance: KoloniDCSingleTone? = null

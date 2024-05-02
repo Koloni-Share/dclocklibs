@@ -2,7 +2,7 @@ package com.kolonidclocklibs.datafile
 
 import com.hzdongcheng.drivers.bean.BoxStatus
 
-interface IAPIKoloniDCCallback {
+public interface IAPIKoloniDCCallback {
 
     fun onDCLockOpenSuccessfully()
     fun onDCLockOpenFailed()

@@ -3,12 +3,15 @@ package com.kolonidclocklibs
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.hzdongcheng.drivers.bean.BoxStatus
 import com.kolonidclocklibs.databinding.ActivityMainBinding
+import com.kolonidclocklibs.datafile.IAPIKoloniDCCallback
 
 
 class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
