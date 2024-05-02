@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
 //        KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onDriverAppConnect()
 
         binding.btnGetScannedData.setOnClickListener {
