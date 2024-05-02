@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KoloniDCLockLibs</string>
+    <string name="lock_status_failed">Failed to get lock status.</string>
+</resources>
