@@ -3,9 +3,8 @@ package com.kolonidclocklibs
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.hzdongcheng.drivers.bean.BoxStatus
 import com.kolonidclocklibs.databinding.ActivityMainBinding
-import com.kolonidclocklibs.datafile.IAPIKoloniDCCallback
+
 
 class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
@@ -14,6 +13,8 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onDriverAppConnect()
 
         binding.btnGetScannedData.setOnClickListener {
             KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onGetDCScannedData()
