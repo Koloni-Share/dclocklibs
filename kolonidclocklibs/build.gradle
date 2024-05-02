@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets{
@@ -39,35 +39,6 @@ android {
     buildFeatures{
         aidl = true
     }
-
-//    publishing {
-//        publications {
-//            register<MavenPublication>("release") {
-//                groupId = "com.kolonidclocklibrary"
-//                artifactId = "kolonidclocklibs"
-//                version = "1.0"
-//
-//                afterEvaluate {
-//                    from(components["release"])
-//                }
-//            }
-//        }
-//    }
-
-//    afterEvaluate {
-//        publishing{
-//            publications{
-//                release(MavenPublication){
-////                    from components.release
-//                    groupId = 'com.kolonidclocklibrary'
-//                    artifactId = 'kolonidclocklibrary'
-//                    version = '1.0.0'
-//                    artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-//                }
-//            }
-//        }
-//    }
-
 }
 
 dependencies {
@@ -85,10 +56,6 @@ dependencies {
 }
 
 repositories {
-
-    flatDir {
-        dirs 'libs'
-    }
 
     mavenCentral()
     mavenLocal()
