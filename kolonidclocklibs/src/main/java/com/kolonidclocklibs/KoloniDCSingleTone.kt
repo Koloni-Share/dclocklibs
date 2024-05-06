@@ -1,6 +1,8 @@
 package com.kolonidclocklibs
 
 import android.app.Activity
+import android.os.Handler
+import android.os.Looper
 import com.kolonidclocklibs.datafile.HAL
 import com.kolonidclocklibs.datafile.IAPIKoloniDCCallback
 import com.kolonidclocklibs.datafile.ServiceProviderInstance
@@ -19,13 +21,14 @@ public class KoloniDCSingleTone {
             if (instance == null) {
                 instance = KoloniDCSingleTone()
                 this.callback = callback
-                ServiceProviderInstance.getInstance().bind(mActivity)
 
                 if (HAL.init(mActivity)) {
                     callback.onDriverAppConnected()
                 } else {
                     callback.onDriverAppConnectionFailed()
                 }
+
+                ServiceProviderInstance.getInstance().bind(mActivity)
 
             }
             return instance as KoloniDCSingleTone
@@ -41,11 +44,19 @@ public class KoloniDCSingleTone {
 
     fun onOpenDcLock(boxName: String) {
         // Open DC Lock.
-        if (HAL.openBox((boxName))) {
-            if (callback != null) {
-                callback?.onDCLockOpenSuccessfully()
-            }
-        } else {
+        try {
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (HAL.openBox((boxName))) {
+                    if (callback != null) {
+                        callback?.onDCLockOpenSuccessfully()
+                    }
+                } else {
+                    if (callback != null) {
+                        callback?.onDCLockOpenFailed()
+                    }
+                }
+            }, 1000)
+        } catch (e: Exception) {
             if (callback != null) {
                 callback?.onDCLockOpenFailed()
             }
@@ -54,16 +65,19 @@ public class KoloniDCSingleTone {
 
     fun onGetDCLockStatus(boxName: String) {
         try {
-            val status = HAL.getBoxStatus(boxName)
-            if (status != null) {
-                if (callback != null) {
-                    callback?.onDCGetLockStatus(status)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val status = HAL.getBoxStatus(boxName)
+                if (status != null) {
+                    if (callback != null) {
+                        callback?.onDCGetLockStatus(status)
+                    }
+                } else {
+                    if (callback != null) {
+                        callback?.onDCGetLockStatusFailed("")
+                    }
                 }
-            } else {
-                if (callback != null) {
-                    callback?.onDCGetLockStatusFailed("")
-                }
-            }
+            }, 1000)
+
         } catch (e: java.lang.Exception) {
             if (callback != null) {
                 callback?.onDCGetLockStatusFailed("" + e.message)
@@ -74,15 +88,17 @@ public class KoloniDCSingleTone {
     fun onGetDCScannedData() {
         // Set DC Scanning.
         try {
-            ServiceProviderInstance.getInstance().scannerController
-            //scanner callback
-            HAL.setScannerCallBack { data, type ->
-                if (callback != null) {
-                    callback?.onDCGetScanningData(data)
+            Handler(Looper.getMainLooper()).postDelayed({
+                ServiceProviderInstance.getInstance().scannerController
+                //scanner callback
+                HAL.setScannerCallBack { data, type ->
+                    if (callback != null) {
+                        callback?.onDCGetScanningData(data)
+                    }
                 }
-            }
-            HAL.toggleBarcode(true)
-            HAL.toggleQRCode(true)
+                HAL.toggleBarcode(true)
+                HAL.toggleQRCode(true)
+            }, 1000)
         } catch (e: Exception) {
             if (callback != null) {
                 callback?.onDCScanningDataFailed("" + e.message)
@@ -93,12 +109,15 @@ public class KoloniDCSingleTone {
     fun onGetRFIDCardReadingData() {
         // Set RFID Card Reading.
         try {
-            ServiceProviderInstance.getInstance().cardController
-            HAL.setCardCallBack { data, type ->
-                if (callback != null) {
-                    callback?.onDCGetRFIDCardData(data)
+            Handler(Looper.getMainLooper()).postDelayed({
+                ServiceProviderInstance.getInstance().cardController
+                HAL.setCardCallBack { data, type ->
+                    if (callback != null) {
+                        callback?.onDCGetRFIDCardData(data)
+                    }
                 }
-            }
+            }, 1000)
+
         } catch (e: java.lang.Exception) {
             if (callback != null) {
                 callback?.onDCRFIDCardDataFailed("" + e.message)

@@ -1,6 +1,8 @@
 package com.kolonidclocklibs
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hzdongcheng.drivers.bean.BoxStatus
@@ -19,6 +21,12 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
         binding.btnGetScannedData.setOnClickListener {
             KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onGetDCScannedData()
+
+//            runOnUiThread {
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onGetDCScannedData()
+//                }, 1000)
+//            }
         }
 
         binding.btnGetRFIDData.setOnClickListener {
