@@ -17,15 +17,16 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-//        KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onDriverAppConnect()
-
         binding.btnGetScannedData.setOnClickListener {
             KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onGetDCScannedData()
         }
 
         binding.btnGetRFIDData.setOnClickListener {
             KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onGetRFIDCardReadingData()
+        }
+
+        binding.btnUnlockTheLock.setOnClickListener {
+            KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onOpenDcLock("2")
         }
     }
 
@@ -36,18 +37,21 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCLockOpenSuccessfully() {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.door_open_success)
             Toast.makeText(this, getString(R.string.door_open_success), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onDCLockOpenFailed() {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.door_open_failed)
             Toast.makeText(this, getString(R.string.door_open_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onDCGetScanningData(data: String) {
         runOnUiThread {
+            binding.tvScannedData.text = "" + getString(R.string.door_scan_success) + " : " + data
             Toast.makeText(this, getString(R.string.door_scan_success) + data, Toast.LENGTH_SHORT)
                 .show()
         }
@@ -55,6 +59,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCGetRFIDCardData(data: String) {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.door_read_success) + " : " + data
             Toast.makeText(this, getString(R.string.door_read_success) + data, Toast.LENGTH_SHORT)
                 .show()
         }
@@ -62,6 +67,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCScanningDataFailed(error: String) {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.door_scan_failed) + " : " + error
             Toast.makeText(this, getString(R.string.door_scan_failed) + error, Toast.LENGTH_SHORT)
                 .show()
         }
@@ -69,6 +75,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCRFIDCardDataFailed(error: String) {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.door_read_failed) + " : " + error
             Toast.makeText(this, getString(R.string.door_read_failed) + error, Toast.LENGTH_SHORT)
                 .show()
         }
@@ -76,6 +83,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDriverAppConnected() {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.driver_connection_success)
             Toast.makeText(this, getString(R.string.driver_connection_success), Toast.LENGTH_SHORT)
                 .show()
         }
@@ -83,6 +91,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDriverAppConnectionFailed() {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.driver_connection_failed)
             Toast.makeText(this, getString(R.string.driver_connection_failed), Toast.LENGTH_SHORT)
                 .show()
         }
@@ -90,6 +99,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCGetLockStatus(boxStatus: BoxStatus) {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.lock_status_success) + boxStatus.openStatus
             Toast.makeText(
                 this,
                 getString(R.string.lock_status_success) + boxStatus.openStatus,
@@ -100,6 +110,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCGetLockStatusFailed(error: String) {
         runOnUiThread {
+            binding.tvScannedData.text = getString(R.string.lock_status_failed) + error
             Toast.makeText(this, getString(R.string.lock_status_failed) + error, Toast.LENGTH_SHORT)
                 .show()
         }

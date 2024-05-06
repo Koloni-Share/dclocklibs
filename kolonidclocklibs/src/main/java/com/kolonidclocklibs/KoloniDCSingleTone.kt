@@ -19,12 +19,13 @@ public class KoloniDCSingleTone {
             if (instance == null) {
                 instance = KoloniDCSingleTone()
                 this.callback = callback
+                ServiceProviderInstance.getInstance().bind(mActivity)
+
                 if (HAL.init(mActivity)) {
                     callback.onDriverAppConnected()
                 } else {
                     callback.onDriverAppConnectionFailed()
                 }
-                ServiceProviderInstance.getInstance().bind(mActivity)
 
             }
             return instance as KoloniDCSingleTone
