@@ -35,10 +35,16 @@ public class KoloniDCSingleTone {
         }
 
         fun removeDCInstance() {
-            instance = null
-            callback = null
-            //unbind
-            ServiceProviderInstance.getInstance().unBind()
+            try {
+                instance = null
+                callback = null
+                //unbind
+                if (ServiceProviderInstance.getInstance() != null) {
+                    ServiceProviderInstance.getInstance().unBind()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -89,15 +95,17 @@ public class KoloniDCSingleTone {
         // Set DC Scanning.
         try {
             Handler(Looper.getMainLooper()).postDelayed({
-                ServiceProviderInstance.getInstance().scannerController
-                //scanner callback
-                HAL.setScannerCallBack { data, type ->
-                    if (callback != null) {
-                        callback?.onDCGetScanningData(data)
+                if (ServiceProviderInstance.getInstance().scannerController != null) {
+                    ServiceProviderInstance.getInstance().scannerController
+                    //scanner callback
+                    HAL.setScannerCallBack { data, type ->
+                        if (callback != null) {
+                            callback?.onDCGetScanningData(data)
+                        }
                     }
+                    HAL.toggleBarcode(true)
+                    HAL.toggleQRCode(true)
                 }
-                HAL.toggleBarcode(true)
-                HAL.toggleQRCode(true)
             }, 1000)
         } catch (e: Exception) {
             if (callback != null) {
@@ -110,10 +118,12 @@ public class KoloniDCSingleTone {
         // Set RFID Card Reading.
         try {
             Handler(Looper.getMainLooper()).postDelayed({
-                ServiceProviderInstance.getInstance().cardController
-                HAL.setCardCallBack { data, type ->
-                    if (callback != null) {
-                        callback?.onDCGetRFIDCardData(data)
+                if (ServiceProviderInstance.getInstance().cardController != null) {
+                    ServiceProviderInstance.getInstance().cardController
+                    HAL.setCardCallBack { data, type ->
+                        if (callback != null) {
+                            callback?.onDCGetRFIDCardData(data)
+                        }
                     }
                 }
             }, 1000)
