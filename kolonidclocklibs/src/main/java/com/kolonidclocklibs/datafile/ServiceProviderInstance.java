@@ -159,7 +159,7 @@ public class ServiceProviderInstance {
             }
         }
         if (scannerController == null) {
-            throw new Exception("do not get the scanner service");
+//            throw new Exception("do not get the scanner service");
         }
         return scannerController;
     }
@@ -186,7 +186,7 @@ public class ServiceProviderInstance {
             }
         }
         if (cardReaderController == null) {
-            throw new Exception("do not get the card reader service");
+//            throw new Exception("do not get the card reader service");
         }
         return cardReaderController;
     }
