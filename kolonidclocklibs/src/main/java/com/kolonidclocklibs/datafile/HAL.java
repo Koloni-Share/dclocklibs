@@ -21,7 +21,8 @@ public class HAL {
     private static final String TAG = "HAL";
     private static ICallBack scannerCallBack;
     private static ICallBack cardCallBack;
-    public static boolean init(Context context){
+
+    public static boolean init(Context context) {
         return ServiceProviderInstance.getInstance().bind(context);
     }
 
@@ -62,14 +63,28 @@ public class HAL {
     public static boolean openBox(String boxName) {
         try {
             Log.d(TAG, "open box: ");
-            Result result =ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName);
-            if (result.getCode() == 0) {
-                Log.d(TAG,"[HAL] open box success：" + boxName);
-                return true;
+
+            if (ServiceProviderInstance.getInstance() != null) {
+                if (ServiceProviderInstance.getInstance().getSlaveController() != null) {
+                    if (ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName) != null) {
+                        Result result = ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName);
+                        if (result.getCode() == 0) {
+                            Log.d(TAG, "[HAL] open box success：" + boxName);
+                            return true;
+                        }
+                        Log.e(TAG, "[HAL] open box fail：" + boxName + ",code " + result.getCode());
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
-            Log.e(TAG,"[HAL] open box fail：" + boxName + ",code " + result.getCode());
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] open box fail，box No. " + boxName);
+            Log.e(TAG, "[HAL] open box fail，box No. " + boxName);
+            return false;
         }
         return false;
     }
@@ -77,39 +92,41 @@ public class HAL {
 
     /**
      * get door status
+     *
      * @param boxName
      * @return
      */
-    public static BoxStatus getBoxStatus(String boxName)throws Exception {
+    public static BoxStatus getBoxStatus(String boxName) throws Exception {
         try {
             Result result = ServiceProviderInstance.getInstance().getSlaveController().queryBoxStatusByName(boxName);
             if (result.getCode() == 0) {
-                Log.e(TAG,"[HAL] get door status success -->" + new Gson().toJson(result));
+                Log.e(TAG, "[HAL] get door status success -->" + new Gson().toJson(result));
                 return new Gson().fromJson(result.getData(), BoxStatus.class);
             }
-            Log.e(TAG,"[HAL] get door status failed, boxName " + boxName);
-            throw new Exception("get door status failed");
+            Log.e(TAG, "[HAL] get door status failed, boxName " + boxName);
+//            throw new Exception("get door status failed");
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] get door status error, boxName " + boxName);
-            throw new Exception("get door status error");
+            Log.e(TAG, "[HAL] get door status error, boxName " + boxName);
+//            throw new Exception("get door status error");
         }
+        return null;
     }
 
     /**
      * get all door status by group
      */
-    public static void getBoxStatue(){
-        Map<Integer, SlaveStatus> boxStatusMap = new HashMap<>();
-        //suppose has 4 group of doors
-        for (int i = 0; i < 4; i++) {
-            try {
-                boxStatusMap.put(i,getSlaveStatus(i));
-            } catch (Exception e) {
-                Log.e(TAG,"get door status error ");
-            }
-        }
-
-    }
+//    public static void getBoxStatue() {
+//        Map<Integer, SlaveStatus> boxStatusMap = new HashMap<>();
+//        //suppose has 4 group of doors
+//        for (int i = 0; i < 4; i++) {
+//            try {
+//                boxStatusMap.put(i, getSlaveStatus(i));
+//            } catch (Exception e) {
+//                Log.e(TAG, "get door status error ");
+//            }
+//        }
+//
+//    }
 
     /**
      * get locker board status
@@ -117,20 +134,19 @@ public class HAL {
      * @param boardId
      * @return board status
      */
-    public static SlaveStatus getSlaveStatus(int boardId) throws Exception {
-        try {
-            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryStatus((byte) boardId);
-            if (result.getCode() == 0) {
-                return new Gson().fromJson(result.getData(), SlaveStatus.class);
-            }
-            Log.d(TAG,"[HAL] get locker board status fail, board" + boardId);
-            throw new Exception("get locker board status fail");
-        } catch (RemoteException e) {
-           Log.d(TAG,"[HAL] get locker board status error, board " + boardId);
-            throw new Exception("get locker board status error");
-        }
-    }
-
+//    public static SlaveStatus getSlaveStatus(int boardId) throws Exception {
+//        try {
+//            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryStatus((byte) boardId);
+//            if (result.getCode() == 0) {
+//                return new Gson().fromJson(result.getData(), SlaveStatus.class);
+//            }
+//            Log.d(TAG, "[HAL] get locker board status fail, board" + boardId);
+//            throw new Exception("get locker board status fail");
+//        } catch (RemoteException e) {
+//            Log.d(TAG, "[HAL] get locker board status error, board " + boardId);
+////            throw new Exception("get locker board status error");
+//        }
+//    }
 
 
     /**
@@ -138,10 +154,10 @@ public class HAL {
      */
     public static void addObserver() throws Exception {
         try {
-            Log.d(TAG,"[HAL] add scanner listener ");
+            Log.d(TAG, "[HAL] add scanner listener ");
             ServiceProviderInstance.getInstance().getScannerController().addObserver(scannerObserver);
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] add scanner listener " + e.getMessage());
+            Log.e(TAG, "[HAL] add scanner listener " + e.getMessage());
         }
     }
 
@@ -152,10 +168,10 @@ public class HAL {
      */
     public static void toggleBarcode(boolean enabled) throws Exception {
         try {
-            Log.d(TAG,"[HAL] set scanner support barcode " + enabled);
+            Log.d(TAG, "[HAL] set scanner support barcode " + enabled);
             ServiceProviderInstance.getInstance().getScannerController().toggleBarcode(enabled);
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] scanner set error " + e.getMessage());
+            Log.e(TAG, "[HAL] scanner set error " + e.getMessage());
         }
     }
 
@@ -166,10 +182,10 @@ public class HAL {
      */
     public static void toggleQRCode(boolean enabled) throws Exception {
         try {
-            Log.d(TAG,"[HAL] set scanner support qr code " + enabled);
+            Log.d(TAG, "[HAL] set scanner support qr code " + enabled);
             ServiceProviderInstance.getInstance().getScannerController().toggleQRCode(enabled);
         } catch (RemoteException e) {
-           Log.e(TAG,"[HAL] scanner set error " + e.getMessage());
+            Log.e(TAG, "[HAL] scanner set error " + e.getMessage());
         }
     }
 
@@ -178,10 +194,10 @@ public class HAL {
      */
     public static void startScanning() throws Exception {
         try {
-            Log.d(TAG,"[HAL] scanner start scan ");
+            Log.d(TAG, "[HAL] scanner start scan ");
             ServiceProviderInstance.getInstance().getScannerController().start();
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] scanner scan error " + e.getMessage());
+            Log.e(TAG, "[HAL] scanner scan error " + e.getMessage());
         }
     }
 
@@ -190,10 +206,10 @@ public class HAL {
      */
     public static void stopScanning() throws Exception {
         try {
-            Log.d(TAG,"[HAL] scanner stop scan ");
+            Log.d(TAG, "[HAL] scanner stop scan ");
             ServiceProviderInstance.getInstance().getScannerController().stop();
         } catch (RemoteException e) {
-            Log.e(TAG,"[HAL] scanner start scan error " + e.getMessage());
+            Log.e(TAG, "[HAL] scanner start scan error " + e.getMessage());
         }
     }
 

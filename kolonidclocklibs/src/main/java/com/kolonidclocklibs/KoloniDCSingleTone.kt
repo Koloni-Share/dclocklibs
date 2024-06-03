@@ -52,14 +52,18 @@ public class KoloniDCSingleTone {
         // Open DC Lock.
         try {
             Handler(Looper.getMainLooper()).postDelayed({
-                if (HAL.openBox((boxName))) {
-                    if (callback != null) {
-                        callback?.onDCLockOpenSuccessfully()
+                try {
+                    if (HAL.openBox((boxName))) {
+                        if (callback != null) {
+                            callback?.onDCLockOpenSuccessfully()
+                        }
+                    } else {
+                        if (callback != null) {
+                            callback?.onDCLockOpenFailed()
+                        }
                     }
-                } else {
-                    if (callback != null) {
-                        callback?.onDCLockOpenFailed()
-                    }
+                } catch (e: Exception) {
+                    callback?.onDCLockOpenFailed()
                 }
             }, 1000)
         } catch (e: Exception) {
@@ -72,15 +76,19 @@ public class KoloniDCSingleTone {
     fun onGetDCLockStatus(boxName: String) {
         try {
             Handler(Looper.getMainLooper()).postDelayed({
-                val status = HAL.getBoxStatus(boxName)
-                if (status != null) {
-                    if (callback != null) {
-                        callback?.onDCGetLockStatus(status)
+                if (HAL.getBoxStatus(boxName) != null) {
+                    val status = HAL.getBoxStatus(boxName)
+                    if (status != null) {
+                        if (callback != null) {
+                            callback?.onDCGetLockStatus(status)
+                        }
+                    } else {
+                        if (callback != null) {
+                            callback?.onDCGetLockStatusFailed("")
+                        }
                     }
                 } else {
-                    if (callback != null) {
-                        callback?.onDCGetLockStatusFailed("")
-                    }
+                    callback?.onDCGetLockStatusFailed("Something went wrong.")
                 }
             }, 1000)
 
