@@ -66,16 +66,22 @@ public class HAL {
 
             if (ServiceProviderInstance.getInstance() != null) {
                 if (ServiceProviderInstance.getInstance().getSlaveController() != null) {
-                    if (ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName) != null) {
-                        Result result = ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName);
-                        if (result.getCode() == 0) {
-                            Log.d(TAG, "[HAL] open box success：" + boxName);
-                            return true;
-                        }
-                        Log.e(TAG, "[HAL] open box fail：" + boxName + ",code " + result.getCode());
-                    } else {
-                        return false;
+                    Result result = ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName);
+                    if (result.getCode() == 0) {
+                        Log.d(TAG, "[HAL] open box success：" + boxName);
+                        return true;
                     }
+                    Log.e(TAG, "[HAL] open box fail：" + boxName + ",code " + result.getCode());
+//                    if (ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName) != null) {
+//                        Result result = ServiceProviderInstance.getInstance().getSlaveController().openBoxByName(boxName);
+//                        if (result.getCode() == 0) {
+//                            Log.d(TAG, "[HAL] open box success：" + boxName);
+//                            return true;
+//                        }
+//                        Log.e(TAG, "[HAL] open box fail：" + boxName + ",code " + result.getCode());
+//                    } else {
+//                        return false;
+//                    }
                 } else {
                     return false;
                 }

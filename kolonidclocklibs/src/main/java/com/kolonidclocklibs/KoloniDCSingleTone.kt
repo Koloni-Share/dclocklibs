@@ -113,6 +113,10 @@ public class KoloniDCSingleTone {
                     }
                     HAL.toggleBarcode(true)
                     HAL.toggleQRCode(true)
+                } else {
+                    if (callback != null) {
+                        callback?.onDCScanningDataFailed("Do not get the scanner service.")
+                    }
                 }
             }, 1000)
         } catch (e: Exception) {
@@ -132,6 +136,10 @@ public class KoloniDCSingleTone {
                         if (callback != null) {
                             callback?.onDCGetRFIDCardData(data)
                         }
+                    }
+                } else {
+                    if (callback != null) {
+                        callback?.onDCRFIDCardDataFailed("Do not get the card reader service.")
                     }
                 }
             }, 1000)

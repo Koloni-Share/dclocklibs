@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
         }
 
         binding.btnUnlockTheLock.setOnClickListener {
-            KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onOpenDcLock("2")
+            KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onOpenDcLock("1")
         }
     }
 

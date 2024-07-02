@@ -150,7 +150,7 @@ public class ServiceProviderInstance {
             try {
                 scannerController = IScannerController.Stub.asInterface(driverManager.getScannerService());
                 if (scannerController == null) {
-                    throw new Exception("do not get the scanner service");
+//                    throw new Exception("do not get the scanner service");
                 }
                 scannerController.start();
                 scannerController.addObserver(HAL.scannerObserver);
@@ -177,7 +177,7 @@ public class ServiceProviderInstance {
             try {
                 cardReaderController = ICardReaderController.Stub.asInterface(driverManager.getCardReaderService());
                 if (cardReaderController == null) {
-                    throw new Exception("do not get the card reader service");
+//                    throw new Exception("do not get the card reader service");
                 }
                 cardReaderController.start();
                 cardReaderController.addObserver(HAL.cardObserver);
