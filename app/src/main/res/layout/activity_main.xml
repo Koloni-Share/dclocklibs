@@ -11,7 +11,7 @@
         android:id="@+id/btnGetScannedData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="312dp"
+        android:layout_marginTop="160dp"
         android:text="@string/get_scanned_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -40,6 +40,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnGetRFIDData" />
 
+    <Button
+        android:id="@+id/btnGetLockStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/get_lock_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnUnlockTheLock" />
+
+
+
     <TextView
         android:id="@+id/tvScannedData"
         android:layout_width="wrap_content"
@@ -51,6 +64,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnUnlockTheLock" />
+        app:layout_constraintTop_toBottomOf="@id/btnGetLockStatus" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

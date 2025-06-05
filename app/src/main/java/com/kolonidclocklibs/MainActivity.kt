@@ -6,7 +6,9 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hzdongcheng.drivers.bean.BoxStatus
+import com.hzdongcheng.drivers.bean.SlaveStatus
 import com.kolonidclocklibs.databinding.ActivityMainBinding
+import com.kolonidclocklibs.datafile.HAL
 import com.kolonidclocklibs.datafile.IAPIKoloniDCCallback
 
 
@@ -35,6 +37,25 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
         binding.btnUnlockTheLock.setOnClickListener {
             KoloniDCSingleTone.getDCInstance(this@MainActivity, this).onOpenDcLock("1")
+        }
+
+        binding.btnGetLockStatus.setOnClickListener {
+            HAL.init(this@MainActivity)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+
+                val allLockerStatuses: Map<Int, SlaveStatus> = HAL.getAllDcLockerStatusForSingleBoard(0)
+
+                for ((boardId, status) in allLockerStatuses) {
+                    println("Board ID: $boardId")
+                    println("Box Count: " + status.boxNums)
+
+                    for (i in 0 until status.boxNums) {
+                        val boxStatus = status.getBoxStatusArray(i).openStatus
+                        println(" - Box $i status: $boxStatus")
+                    }
+                }
+            },1000)
         }
     }
 
@@ -107,7 +128,8 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
 
     override fun onDCGetLockStatus(boxStatus: BoxStatus) {
         runOnUiThread {
-            binding.tvScannedData.text = getString(R.string.lock_status_success) + boxStatus.openStatus
+            binding.tvScannedData.text =
+                getString(R.string.lock_status_success) + boxStatus.openStatus
             Toast.makeText(
                 this,
                 getString(R.string.lock_status_success) + boxStatus.openStatus,
@@ -123,4 +145,5 @@ class MainActivity : AppCompatActivity(), IAPIKoloniDCCallback {
                 .show()
         }
     }
+
 }

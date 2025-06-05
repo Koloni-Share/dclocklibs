@@ -8,7 +8,10 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.hzdongcheng.drivers.IDriverManager;
+import com.hzdongcheng.drivers.bean.Result;
+import com.hzdongcheng.drivers.bean.SlaveStatus;
 import com.hzdongcheng.drivers.locker.ISlaveController;
 import com.hzdongcheng.drivers.peripheral.cardreader.ICardReaderController;
 import com.hzdongcheng.drivers.peripheral.scanner.IScannerController;
@@ -41,7 +44,7 @@ public class ServiceProviderInstance {
     private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
         @Override
         public void binderDied() {
-            if (driverManager != null&&contextWeakReference!=null){
+            if (driverManager != null && contextWeakReference != null) {
                 driverManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
                 contextWeakReference.get().unbindService(serviceConnection);
             }
@@ -53,7 +56,7 @@ public class ServiceProviderInstance {
             Log.d(TAG, "->driver connect success");
             driverManager = IDriverManager.Stub.asInterface(iBinder);
             try {
-                iBinder.linkToDeath(mDeathRecipient,0);
+                iBinder.linkToDeath(mDeathRecipient, 0);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -61,7 +64,7 @@ public class ServiceProviderInstance {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            Log.d(TAG,"->driver disconnect");
+            Log.d(TAG, "->driver disconnect");
             driverManager = null;
             scannerController = null;
             slaveController = null;
@@ -71,27 +74,28 @@ public class ServiceProviderInstance {
     };
 
 
-    private ServiceProviderInstance(){
+    private ServiceProviderInstance() {
 
     }
 
-    public static ServiceProviderInstance getInstance(){
+    public static ServiceProviderInstance getInstance() {
         return instance;
     }
+
     /**
      * service reconnect(delay 3 seconds)
      */
     private synchronized void reconnectService() {
 
         if (schedule != null && !schedule.isDone()) {
-            Log.d(TAG,"--> driver is reconnecting");
+            Log.d(TAG, "--> driver is reconnecting");
             return;
         }
 
         schedule = executorService.schedule(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG,"--> start reconnect");
+                Log.d(TAG, "--> start reconnect");
                 if (contextWeakReference.get() != null) {
                     boolean isBind;
                     int tryCount = 0;
@@ -106,11 +110,13 @@ public class ServiceProviderInstance {
             }
         }, 3, TimeUnit.SECONDS);
     }
+
     /**
      * bind driver service
+     *
      * @param context
      */
-    public boolean bind(Context context){
+    public boolean bind(Context context) {
         driverIntent = new Intent("hzdongcheng.intent.action.DRIVER");
         driverIntent.setPackage("com.hzdongcheng.drivers");
         contextWeakReference = new WeakReference<>(context);
@@ -119,32 +125,33 @@ public class ServiceProviderInstance {
 
     /**
      * get locker board
+     *
      * @return
      */
-    public static ISlaveController getSlaveController()  {
-        if (slaveController != null&&slaveController.asBinder().isBinderAlive())
+    public static ISlaveController getSlaveController() {
+        if (slaveController != null && slaveController.asBinder().isBinderAlive())
             return slaveController;
         if (driverManager != null) {
             try {
                 slaveController = ISlaveController.Stub.asInterface(driverManager.getSlaveService((byte) 0));
             } catch (RemoteException e) {
-                Log.e(TAG,">>locker board get fail>>" + e.getMessage());
+                Log.e(TAG, ">>locker board get fail>>" + e.getMessage());
             }
         }
         if (slaveController == null) {
-            Log.e(TAG,"do not get the locker board model");
+            Log.e(TAG, "do not get the locker board model");
         }
         return slaveController;
     }
 
-
     /**
      * get scanner service
+     *
      * @return
      * @throws
      */
     public IScannerController getScannerController() throws Exception {
-        if (scannerController != null&&scannerController.asBinder().isBinderAlive())
+        if (scannerController != null && scannerController.asBinder().isBinderAlive())
             return scannerController;
         if (driverManager != null) {
             try {
@@ -155,7 +162,7 @@ public class ServiceProviderInstance {
                 scannerController.start();
                 scannerController.addObserver(HAL.scannerObserver);
             } catch (RemoteException e) {
-                Log.e(TAG,">>get the scanner service fail>>" + e.getMessage());
+                Log.e(TAG, ">>get the scanner service fail>>" + e.getMessage());
             }
         }
         if (scannerController == null) {
@@ -167,11 +174,12 @@ public class ServiceProviderInstance {
 
     /**
      * get card reader service
+     *
      * @return
      * @throws
      */
     public ICardReaderController getCardController() throws Exception {
-        if (cardReaderController != null&&cardReaderController.asBinder().isBinderAlive())
+        if (cardReaderController != null && cardReaderController.asBinder().isBinderAlive())
             return cardReaderController;
         if (driverManager != null) {
             try {
@@ -182,7 +190,7 @@ public class ServiceProviderInstance {
                 cardReaderController.start();
                 cardReaderController.addObserver(HAL.cardObserver);
             } catch (RemoteException e) {
-                Log.e(TAG,">>get the card reader service fail>>" + e.getMessage());
+                Log.e(TAG, ">>get the card reader service fail>>" + e.getMessage());
             }
         }
         if (cardReaderController == null) {
@@ -192,8 +200,8 @@ public class ServiceProviderInstance {
     }
 
     //unbind
-    public void unBind(){
-        if (contextWeakReference.get() != null){
+    public void unBind() {
+        if (contextWeakReference.get() != null) {
             contextWeakReference.get().unbindService(serviceConnection);
         }
 

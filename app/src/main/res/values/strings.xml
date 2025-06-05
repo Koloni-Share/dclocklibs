@@ -14,4 +14,5 @@
     <string name="get_rfid_data">Get RFID Data</string>
     <string name="unlock_dc">Unlock</string>
     <string name="data_will_come_here">Data will come here</string>
+    <string name="get_lock_status">Get Lock Status</string>
 </resources>

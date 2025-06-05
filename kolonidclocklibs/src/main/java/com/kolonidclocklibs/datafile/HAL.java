@@ -12,6 +12,7 @@ import com.hzdongcheng.drivers.bean.SlaveStatus;
 import com.hzdongcheng.drivers.peripheral.IObserver;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,6 +117,52 @@ public class HAL {
 //            throw new Exception("get door status error");
         }
         return null;
+    }
+
+    /**
+     * get locker board
+     *
+     * @return
+     */
+    public static SlaveStatus getSlaveStatus(int boardID) {
+        try {
+            Result result = ServiceProviderInstance.getInstance().getSlaveController().queryStatus((byte) boardID);
+            if (result.getCode() == 0) {
+                return new Gson().fromJson(result.getData(), SlaveStatus.class);
+            }
+            Log.e(TAG, "[HAL] get compartment status fail>> " + boardID);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            Log.e(TAG, "[HAL] get compartment status fail>> " + boardID + " >>>Error>>> " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static Map<Integer, SlaveStatus> getAllDcLockerStatusForSingleBoard(int boardId) {
+        Map<Integer, SlaveStatus> allStatusMap = new HashMap<>();
+
+        SlaveStatus status = getSlaveStatus(boardId);
+        if (status != null) {
+            allStatusMap.put(boardId, status);
+        } else {
+            Log.e(TAG, "Failed to get status for board: " + boardId);
+        }
+
+        return allStatusMap;
+    }
+
+    public static Map<Integer, SlaveStatus> getAllDcLockerStatusForMultipleBoard(List<Integer> boardIds) {
+        Map<Integer, SlaveStatus> allStatusMap = new HashMap<>();
+
+        for (int boardId : boardIds) {
+            SlaveStatus status = getSlaveStatus(boardId);
+            if (status != null) {
+                allStatusMap.put(boardId, status);
+            } else {
+                Log.e(TAG, "Failed to get status for board: " + boardId);
+            }
+        }
+        return allStatusMap;
     }
 
     /**
